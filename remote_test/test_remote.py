@@ -31,17 +31,9 @@ def intake_server():
         P.communicate()
 
 
-def test_remote_netcdf(intake_server):
-    cat_local = open_catalog(cat_file)
-    cat = intake.open_catalog(intake_server)
-    assert 'outer' in cat
-    #source = cat.xarray_source()
-    #assert isinstance(source._ds, xr.Dataset)
-    #assert source._schema is None
-    #source._get_schema()
-    #assert source._schema is not None
-    #repr(source.to_dask())
-    #assert (source.to_dask().rh.data.compute() ==
-    #        cat_local.xarray_source.to_dask().rh.data.compute()).all()
-    #assert (source.read() ==
-    #        cat_local.xarray_source.read()).all()
+def test_remote(intake_server):
+    cat_local = intake.open_catalog(cat_file)
+    cat_remote = intake.open_catalog(intake_server)
+    assert 'outer' in cat_remote
+    assert 'outer' in cat_local
+    import pdb; pdb.set_trace()

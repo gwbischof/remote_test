@@ -1,3 +1,0 @@
-sources:
-  outer:
-    driver: remote_test.cat.OuterCatalog

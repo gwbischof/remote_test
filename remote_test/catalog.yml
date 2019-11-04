@@ -1,6 +1,3 @@
-plugin:
-  source:
-   - module: remote_test
 sources:
   outer:
     driver: remote_test.cat.OuterCatalog
