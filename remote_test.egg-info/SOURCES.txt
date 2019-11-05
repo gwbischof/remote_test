@@ -1,7 +1,6 @@
 setup.py
 remote_test/__init__.py
 remote_test/cat.py
-remote_test/drivers.py
 remote_test/test_remote.py
 remote_test.egg-info/PKG-INFO
 remote_test.egg-info/SOURCES.txt
