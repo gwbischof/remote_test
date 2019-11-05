@@ -1,11 +1,11 @@
 from intake.catalog.local import Catalog, DataSource, LocalCatalogEntry
-
+from intake.container import container_map
 
 class MyDriver(DataSource):
 
-    def __init__(self, *, shape, color, **kwargs):
-        self._shape = shape
-        self._color = color
+    def __init__(self, shape, color, **kwargs):
+        self._shape = args['shape']
+        self._color = args['color']
         super().__init__(**kwargs)
 
     def _get_partition(self, partition):
@@ -16,9 +16,7 @@ class MyDriver(DataSource):
 
 class InnerCatalog(Catalog):
 
-    container = 'catalog'
-
-    def __init__(self, *args, shape, **kwargs):
+    def __init__(self, shape, **kwargs):
         self._shape = shape
         super().__init__(*args, **kwargs)
 
@@ -27,7 +25,7 @@ class InnerCatalog(Catalog):
         for color in ('red', 'green', 'blue'):
             self._entries[color] = LocalCatalogEntry(
                 name=color,
-                driver=MyDriver,
+                driver='remote_test.cat.MyDriver',
                 description='',
                 catalog=self,
                 args={'shape': self._shape, 'color': color})
@@ -38,13 +36,11 @@ class InnerCatalog(Catalog):
 
 class OuterCatalog(Catalog):
 
-    container = 'catalog'
-
     def _load(self):
         for shape in ('circle', 'square', 'triangle'):
             self._entries[shape] = LocalCatalogEntry(
                 name=shape,
-                driver=InnerCatalog,
+                driver='remote_test.cat.InnerCatalog',
                 description='',
                 catalog=self,
                 args={'shape': shape})

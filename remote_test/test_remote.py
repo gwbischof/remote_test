@@ -36,4 +36,4 @@ def test_remote(intake_server):
     cat_remote = intake.open_catalog(intake_server)
     assert 'outer' in cat_remote
     assert 'outer' in cat_local
-    import pdb; pdb.set_trace()
+    print(tuple(cat_remote['outer']()['circle']))
