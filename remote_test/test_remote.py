@@ -36,4 +36,8 @@ def test_remote(intake_server):
     cat_remote = intake.open_catalog(intake_server)
     assert 'outer' in cat_remote
     assert 'outer' in cat_local
-    print(tuple(cat_remote['outer']()['circle']))
+    print(tuple(cat_remote))
+    print(tuple(cat_remote['outer']()))
+    print(tuple(cat_remote['outer']()['circle']()))
+    print(cat_remote['outer']()['circle']()['green'])
+    print(cat_remote['outer']()['circle']()['green'].read())
