@@ -6,12 +6,12 @@ class MyDriver(DataSource):
     container = 'python'
 
     def __init__(self, shape, color, **kwargs):
-        self._shape = args['shape']
-        self._color = args['color']
+        self._shape = shape
+        self._color = color
         super().__init__(**kwargs)
 
     def _get_partition(self, partition):
-        print('fetching data for {(self._shape, self_color)}')
+        print(f'fetching data for {(self._shape, self._color)}')
         print("PARTITION", partition)
         return self._shape, self._color
 
@@ -26,7 +26,7 @@ class InnerCatalog(Catalog):
 
     def __init__(self, shape, **kwargs):
         self._shape = shape
-        super().__init__(*args, **kwargs)
+        super().__init__(**kwargs)
 
     def _load(self):
         print(f'loaded inner catalog for {self._shape}')
