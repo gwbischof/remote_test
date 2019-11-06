@@ -1,7 +1,9 @@
 from intake.catalog.local import Catalog, DataSource, LocalCatalogEntry
+from intake.source.base import Schema
 from intake.container import container_map
 
 class MyDriver(DataSource):
+    container = 'python'
 
     def __init__(self, shape, color, **kwargs):
         self._shape = args['shape']
@@ -12,6 +14,12 @@ class MyDriver(DataSource):
         print('fetching data for {(self._shape, self_color)}')
         print("PARTITION", partition)
         return self._shape, self._color
+
+    def _get_schema(self):
+        return Schema(
+            datashape=(2,),
+            npartitions=1,
+            extra_metadata={})
 
 
 class InnerCatalog(Catalog):
