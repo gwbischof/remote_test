@@ -36,6 +36,7 @@ class InnerCatalog(Catalog):
                 driver='remote_test.cat.MyDriver',
                 description='',
                 catalog=self,
+                direct_access='forbid',
                 args={'shape': self._shape, 'color': color})
 
     def read_partition(self, partition):
@@ -51,6 +52,7 @@ class OuterCatalog(Catalog):
                 driver='remote_test.cat.InnerCatalog',
                 description='',
                 catalog=self,
+                direct_access='forbid',
                 args={'shape': shape})
 
     def read_partition(self, partition):
