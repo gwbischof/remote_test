@@ -19,12 +19,19 @@ class MyDriver(DataSource):
         partitions = [self._shape, self._color]
         return partitions[partition['index']]
 
-    # If you want partition to be more complex than an integer, you need to
-    # override read. Read is what calls get_partition, then get_partition calls
-    # read partition.
+    # I think, if you want partition to be more complex than an integer,
+    # you need to override read because read in the base class calls
+    # get_partition with an integer.
+    # Some reason this method never gets called when I do this:
+    # print(remote_catalog['outer']()['circle']()['green'].read())
     def read(self):
         print("READ")
         return [self._get_partition({'index': i}) for i in range(self.npartitions)]
+
+    # I think read partition only takes an integer, but is able to call
+    # get_partition with something more complex than an integer.
+    def read_partition(self, i):
+        return self._get_partition({'index': i})
 
     # Returns the schema of the container.
     def _get_schema(self):
