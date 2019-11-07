@@ -11,8 +11,8 @@ class MyDriver(DataSource):
     def __init__(self, shape, color, **kwargs):
         self._shape = shape
         self._color = color
-        self.npartitions = 2
-        super().__init__(**kwargs)
+        self.npartitions = 3
+        super().__init__(self.npartitions, **kwargs)
 
     def _get_partition(self, partition):
         print("GET_PARTITION", partition['index'])
