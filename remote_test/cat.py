@@ -3,19 +3,30 @@ from intake.source.base import Schema
 from intake.container import container_map
 
 class MyDriver(DataSource):
+    # Short identifier
+    name = 'mydriver'
+    # The type of data that is created from the read method.
     container = 'python'
 
     def __init__(self, shape, color, **kwargs):
         self._shape = shape
         self._color = color
+        self.npartitions = 2
         super().__init__(**kwargs)
 
     def _get_partition(self, partition):
-        print(f'fetching data for {(self._shape, self._color)}')
-        print(partition['index'])
-        return self._shape, self._color
+        print("GET_PARTITION", partition['index'])
+        partitions = [self._shape, self._color]
+        return partitions[partition['index']]
 
-    # Not sure why this is needed.
+    # If you want partition to be more complex than an integer, you need to
+    # override read. Read is what calls get_partition, then get_partition calls
+    # read partition.
+    def read(self):
+        print("READ")
+        return [self._get_partition({'index': i}) for i in range(self.npartitions)]
+
+    # Returns the schema of the container.
     def _get_schema(self):
         return Schema(
             datashape=(2,),
@@ -24,6 +35,8 @@ class MyDriver(DataSource):
 
 
 class InnerCatalog(Catalog):
+    # Short identifier
+    name = 'inner'
 
     def __init__(self, shape, **kwargs):
         self._shape = shape
@@ -49,6 +62,8 @@ class InnerCatalog(Catalog):
 
 
 class OuterCatalog(Catalog):
+    # Short identifier
+    name = 'outer'
 
     # Load the entries of the catalog.
     def _load(self):
