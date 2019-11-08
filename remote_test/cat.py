@@ -14,7 +14,7 @@ class MyDriver(DataSource):
     # This determine the types of the class that you get on the client side.
     # container is looked up in intake.container.container_map to determine the
     # class you get on the client side.
-    container = 'catalog'
+    container = 'python'
 
     # This defaults to false and you are supposed to set it to true to read the data in
     # chunks. It doesn't seem to make a difference though.
@@ -49,6 +49,8 @@ class MyDriver(DataSource):
 
     # Returns the schema of the container.
     # Somehow the result is passed to RemoteSequenceSource.
+    # If I want to change the container to python, I don't understand what the
+    # schema needs to be.
     def _get_schema(self):
         return Schema(
             datashape=(2,),
