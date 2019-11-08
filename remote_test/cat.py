@@ -6,27 +6,36 @@ class MyDriver(DataSource):
     # Short identifier
     name = 'mydriver'
 
-    # The type of data that is created from the read method.
-    container = 'python'
+    # Definition: the basic type of data that the class returns, such as "dataframe"
+    # If containter = catalog then the type of the object that you read from on
+    # the client side is a RemoteCatalogEntry.
+    # If container = python then you get a RemoteSequenceSource on the Client
+    # side.
+    # This determine the types of the class that you get on the client side.
+    # container is looked up in intake.container.container_map to determine the
+    # class you get on the client side.
+    container = 'catalog'
 
-    # This defaults to false and you need to set it to true to read the data in
-    # chunks.
+    # This defaults to false and you are supposed to set it to true to read the data in
+    # chunks. It doesn't seem to make a difference though.
     partition_access = True
 
     def __init__(self, shape, color, **kwargs):
         self._shape = shape
         self._color = color
-        self.npartitions = 3
-        super().__init__(self.npartitions, **kwargs)
+        super().__init__(**kwargs)
 
+    # Returns a partition of the data.
     def _get_partition(self, partition):
         print("GET_PARTITION", partition['index'])
         partitions = [self._shape, self._color]
         return partitions[partition['index']]
 
     # Overridding read does nothing.
-    # Some reason this method never gets called when I do this:
-    # print(remote_catalog['outer']()['circle']()['green'].read())
+    # The client calls read on the RemoteCatalogEntry, or the
+    # RemoteSequenceSource, not on the DataSource.
+    # print(remote_catalog['outer']()['circle']()['green'].read()) doesn't call
+    # this method.
     def read(self):
         print("READ")
         return [self._get_partition({'index': i}) for i in range(self.npartitions)]
@@ -39,6 +48,7 @@ class MyDriver(DataSource):
         return self._get_partition({'index': i})
 
     # Returns the schema of the container.
+    # Somehow the result is passed to RemoteSequenceSource.
     def _get_schema(self):
         return Schema(
             datashape=(2,),
