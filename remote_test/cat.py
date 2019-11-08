@@ -5,8 +5,13 @@ from intake.container import container_map
 class MyDriver(DataSource):
     # Short identifier
     name = 'mydriver'
+
     # The type of data that is created from the read method.
     container = 'python'
+
+    # This defaults to false and you need to set it to true to read the data in
+    # chunks.
+    partition_access = True
 
     def __init__(self, shape, color, **kwargs):
         self._shape = shape
@@ -19,9 +24,7 @@ class MyDriver(DataSource):
         partitions = [self._shape, self._color]
         return partitions[partition['index']]
 
-    # I think, if you want partition to be more complex than an integer,
-    # you need to override read because read in the base class calls
-    # get_partition with an integer.
+    # Overridding read does nothing.
     # Some reason this method never gets called when I do this:
     # print(remote_catalog['outer']()['circle']()['green'].read())
     def read(self):
@@ -30,14 +33,16 @@ class MyDriver(DataSource):
 
     # I think read partition only takes an integer, but is able to call
     # get_partition with something more complex than an integer.
+    # This is what you need to do if you want a more complex partition.
     def read_partition(self, i):
+        print("READ PARTITION MY DRIVER")
         return self._get_partition({'index': i})
 
     # Returns the schema of the container.
     def _get_schema(self):
         return Schema(
             datashape=(2,),
-            npartitions=1,
+            npartitions=2,  # This sets self.npartitions of the RemoteSequenceSource
             extra_metadata={})
 
 
